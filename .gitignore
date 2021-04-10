@@ -4,3 +4,4 @@ docker-compose.yml
 mountPoint/*
 backup/*
 shudownDockersAndRemoveImages.sh
+.vscode/
