@@ -1,5 +1,13 @@
 #! /bin/bash
 
+if [ -f .env ]; then
+    # Load Environment Variables
+    export $(cat .env | grep -v '#' | awk '/=/ {print $1}')
+    # For instance, will be example_kaggle_key
+    echo "Loaded environmental variable: PortNumber=$PortNumber"
+fi
+
+
 # Check if docker is installed or not
 if [[ $(which docker) && $(docker --version) ]]; then
   echo "$OSTYPE has $(docker --version) installed"
@@ -75,4 +83,8 @@ docker-compose up -d --build
 echo $MW_CONTAINER" will do regular database content dump."
 docker exec $MW_CONTAINER service cron start
 
-echo "Please go to a browser and use http://localhost:9352 to test the service"
+docker exec $MW_CONTAINER chmod -R 777 /var/www/html/images
+
+docker exec $MW_CONTAINER php /var/www/html/maintenance/update.php
+
+echo "Please go to a browser and use http://localhost:$PortNumber to test the service"
